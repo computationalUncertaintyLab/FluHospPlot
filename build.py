@@ -5,7 +5,7 @@ import os
 
 from interface import interface
 from visualize import visualize as viz
-
+from matplotlib import pyplot as plt
 if __name__ == "__main__":
 
     io = interface()

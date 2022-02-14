@@ -1,8 +1,4 @@
 #mcandrew
-import datetime
-
-from matplotlib.pyplot import arrow
-# from adjustText import adjust_text
 
 class visualize(object):
     def __init__(self,io):
@@ -21,8 +17,9 @@ class visualize(object):
         plotdata = self.dataWide
         hosps = plotdata[self.locname].values
         dates = plotdata.index[::-1][::4][::-1]
-        print(self.locname,plotdata.shape)
-        ax.plot( plotdata, lw=2,alpha=0.40,color="blue" )
+        
+        ax.plot( plotdata , lw=2,alpha=0.40,color="blue" )
+        # print(hosps[::-1][::4][::-1])
         ax.scatter(dates,hosps[::-1][::4][::-1],s=10,color="blue",alpha=0.8)
         
         #label points 5 weeks in the past
@@ -30,30 +27,11 @@ class visualize(object):
         datesPast5 = plotdata.index[-5:]
 
         ax.scatter(datesPast5,hospsPast5,s=10,color="blue",alpha=0.8)
-        offset = 5
-        # change the date format to INT
-        yoffset=0
-        for date,hosp in zip(datesPast5,hospsPast5): 
-            # change the str to date
-            date1 = datetime.datetime.strptime(date,"%Y-%m-%d")
-            # add one day to the date and keep it ad YYYY-MM-DD
-            datenext = date1 + datetime.timedelta(days=1)
-            # transfrom the date to YYYY-MM-DD
-            datenext = datenext.strftime("%Y-%m-%d")
-            # print("nextdate",date,datenext)
-            ax.annotate(
-                int(hosp),
-                xy=(date,hosp),
-                # change the string format to INT
-                xytext=(datenext, hosp+yoffset),    # fraction, fraction
-                arrowprops=dict(arrowstyle='->',color='black',connectionstyle='arc3'),
-                fontsize=5,
-            )  
-            # yoffset+=0.1
-            # text=ax.text(date,hosp-offset,s="{:d}".format(int(hosp))
-            #         ,ha="left",va="top",fontsize=5)
+        for date,hosp in zip(datesPast5,hospsPast5):
+            ax.text(date,hosp,s="{:d}".format(int(hosp))
+                    ,ha="right",va="bottom",fontsize=6)
                     #,bbox = dict(facecolor=mpl.rcParams['axes.facecolor'], alpha=0.4)   )
-
+        
         ax.tick_params(which="both", labelsize=6)
 
         ax.set_ylabel("Number of weekly\nconfirmed hospitlizations due to influenza", fontsize=6)
@@ -64,7 +42,7 @@ class visualize(object):
         
         ax.text(0.01,0.95,"{:s}".format(self.locname[0]),fontsize=6,fontweight="bold",ha="left",va="top",transform=ax.transAxes)
         ax.text(0.01,0.80,"Data source = https://github.com/cdcepi/Flusight-forecast-data",fontsize=6,ha="left",va="top",transform=ax.transAxes)
-
+        
         self.ax=ax
         self.fig=fig
         return fig,ax
@@ -86,10 +64,11 @@ class visualize(object):
         self.fig.set_size_inches( 1600/300, 800/300 )
 
         fd = self.io.getForecastDate()
+        # print(fd,fd,self.io.locAbbr)
+        # plt.show()
         plt.savefig("./{:s}/{:s}_{:s}trajectory.jpg".format(fd,fd,self.io.locAbbr),dpi=300)
 
 if __name__ == "__main__":
-
     pass
 
     
