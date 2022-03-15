@@ -14,6 +14,7 @@ preprocess:
 
 build:
 	$(PYTHON) build.py
+	$(PYTHON) produce_data-latest.py
 
 git:
 	git add . && git commit -m "$(COMMIT)" && git push
