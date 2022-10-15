@@ -5,3 +5,4 @@ seaborn
 sklearn
 epiweeks
 plotly
+kaleido

@@ -44,7 +44,7 @@ class visualize(object):
             )
             down = 1 if down == 0 else 0
         # fig width and height
-        fig.update_layout(width=800, height=600)
+        fig.update_layout(width=1200, height=600)
         self.fig = fig
         
         return fig
