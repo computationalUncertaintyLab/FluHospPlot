@@ -25,6 +25,8 @@ class visualize(object):
         # rotate the xtick labels
         ax.scatter(dates,hosps[::-1][::4][::-1],s=10,color="blue",alpha=0.8)
         plt.xticks(rotation=90)
+        # make the x test smaller
+        plt.setp(ax.get_xticklabels(), fontsize=8)
         #label points 5 weeks in the past
         hospsPast5 = hosps[-5:]
         datesPast5 = plotdata.index[-5:]
@@ -32,7 +34,7 @@ class visualize(object):
         ax.scatter(datesPast5,hospsPast5,s=10,color="blue",alpha=0.8)
         offset = 5
         # change the date format to INT
-        yoffset=5
+        yoffset=0
         down = True
         for date,hosp in zip(datesPast5,hospsPast5): 
             # change the str to date
@@ -41,7 +43,9 @@ class visualize(object):
             datenext = date1 + datetime.timedelta(days=0)
             # transfrom the date to YYYY-MM-DD
             datenext = datenext.strftime("%Y-%m-%d")
-            yoffset= 5 if down else -5
+            # get one ytick length
+            yticklength = ax.get_yticks()[1]-ax.get_yticks()[0]
+            yoffset = yoffset + yticklength if down else yoffset - yticklength
             # print("nextdate",date,datenext)
             ax.annotate(
                 int(hosp),
@@ -51,6 +55,7 @@ class visualize(object):
                 arrowprops=dict(arrowstyle='->',color='black',connectionstyle='arc3'),
                 fontsize=5,
             )  
+            down = not down
             # yoffset+=0.1
             # text=ax.text(date,hosp-offset,s="{:d}".format(int(hosp))
             #         ,ha="left",va="top",fontsize=5)
