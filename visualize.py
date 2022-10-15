@@ -24,7 +24,7 @@ class visualize(object):
         ax.plot( plotdata, lw=2,alpha=0.40,color="blue" )
         # rotate the xtick labels
         ax.scatter(dates,hosps[::-1][::4][::-1],s=10,color="blue",alpha=0.8)
-        plt.xticks(rotation=90)
+        plt.xticks(rotation=-90)
         # make the x test smaller
         plt.setp(ax.get_xticklabels(), fontsize=4)
         #label points 5 weeks in the past
