@@ -10,91 +10,53 @@ class visualize(object):
         self.dataLong, self.dataWide = io.locData__long, io.locData__wide
         self.locname = io.locname
     def fluTrajectory(self):
-        import matplotlib as mpl
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-
-        plt.style.use("fivethirtyeight")
-        fig,ax = plt.subplots()
+        # use plotly to plot out the trajectory
+        import plotly.graph_objects as go
+        import plotly.express as px
+        import pandas as pd
 
         plotdata = self.dataWide
         hosps = plotdata[self.locname].values
+        hosps = hosps.reshape(-1)
         dates = plotdata.index[::-1][::4][::-1]
-        print(self.locname,plotdata.shape)
-        ax.plot( plotdata, lw=2,alpha=0.40,color="blue" )
-        # rotate the xtick labels
-        ax.scatter(dates,hosps[::-1][::4][::-1],s=10,color="blue",alpha=0.8)
-        plt.xticks(rotation=-90)
-        # make the x_axis labels smaller
-        ax.xaxis.label.set_size(10)
-        #label points 5 weeks in the past
-        hospsPast5 = hosps[-5:]
-        datesPast5 = plotdata.index[-5:]
 
-        ax.scatter(datesPast5,hospsPast5,s=10,color="blue",alpha=0.8)
-        offset = 5
-        # change the date format to INT
-        yoffset=0
-        down = True
-        for date,hosp in zip(datesPast5,hospsPast5): 
-            # change the str to date
-            date1 = datetime.datetime.strptime(date,"%Y-%m-%d")
-            # add one day to the date and keep it ad YYYY-MM-DD
-            datenext = date1 + datetime.timedelta(days=0)
-            # transfrom the date to YYYY-MM-DD
-            datenext = datenext.strftime("%Y-%m-%d")
-            # get one ytick length
-            yticklength = ax.get_yticks()[1]-ax.get_yticks()[0]
-            offset = yoffset + yticklength if down else yoffset - yticklength
-            # print("nextdate",date,datenext)
-            ax.annotate(
-                int(hosp),
-                xy=(date,hosp),
-                # change the string format to INT
-                xytext=(date, hosp+offset),    # fraction, fraction
-                arrowprops=dict(arrowstyle='->',color='black',connectionstyle='arc3'),
-                fontsize=5,
-            )  
-            down = not down
-            # yoffset+=0.1
-            # text=ax.text(date,hosp-offset,s="{:d}".format(int(hosp))
-            #         ,ha="left",va="top",fontsize=5)
-                    #,bbox = dict(facecolor=mpl.rcParams['axes.facecolor'], alpha=0.4)   )
-
-        ax.tick_params(which="both", labelsize=6)
-
-        ax.set_ylabel("Number of weekly\nconfirmed hospitlizations due to influenza", fontsize=6)
-        ax.set_xlabel("",fontsize=6)
-
-        ax.set_xticks(ax.get_xticks()[::-1][::10][::-1])
-        ax.set_yticklabels(["{:,}".format(int(y)) for y in ax.get_yticks()])
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=plotdata.index, y = hosps))
+        fig.update_layout(title='Flu Trajectory',xaxis_title='Date',yaxis_title='Hospitilization')
+        # add location name to the left top of the plot
+        last5dates = plotdata.index[-5:]
+        last5hosps = hosps[-5:]
+        # dynamic add 5 arrows to the plot
+        down = 0
+        for i in range(5):
+            fig.add_annotation(
+                x=last5dates[i],
+                y=last5hosps[i],
+                xref="x",
+                yref="y",
+                text=str(last5hosps[i]),
+                # add marker to the point               
+                # show arrow
+                showarrow=True,
+                arrowhead=7,
+                ax=0,
+                ay=-30 if down == 0 else 30
+            )
+            down = 1 if down == 0 else 0
+        # fig width and height
+        fig.update_layout(width=800, height=600)
+        self.fig = fig
         
-        ax.text(0.01,0.95,"{:s}".format(self.locname[0]),fontsize=6,fontweight="bold",ha="left",va="top",transform=ax.transAxes)
-        ax.text(0.01,0.80,"Data source = https://github.com/cdcepi/Flusight-forecast-data",fontsize=6,ha="left",va="top",transform=ax.transAxes)
+        return fig
+            
 
-        self.ax=ax
-        self.fig=fig
-        return fig,ax
-
-    def mm2inch(x):
-        return x/25.4
-    
-    def plotoutBanner(self):
-        import matplotlib.pyplot as plt
-
-        plt.subplots_adjust(bottom=0.115)
-        self.fig.set_size_inches( 1600/300, 300/300 )
-        plt.savefig("{:s}_UStrajectory.jpg".format(self.io.getForecastDate()),dpi=300)
 
     def plotoutState(self):
         import matplotlib.pyplot as plt
-
-        plt.subplots_adjust(bottom=0.115)
-        self.fig.set_size_inches( 1600/300, 800/300 )
-
         fd = self.io.getForecastDate()
-        plt.savefig("./{:s}/{:s}_{:s}_trajectory.jpg".format(fd,fd,self.io.locAbbr),dpi=300)
-
+        # save the image
+        self.fig.write_html("./{:s}/{:s}_{:s}_trajectory.html".format(fd,fd,self.io.locAbbr))
+        self.fig.write_image("./{:s}/{:s}_{:s}_trajectory.png".format(fd,fd,self.io.locAbbr))
 if __name__ == "__main__":
 
     pass
