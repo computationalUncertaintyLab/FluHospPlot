@@ -33,7 +33,7 @@ class visualize(object):
             showarrow=False
         )
         # fig width and height
-        fig.update_layout(width=800, height=600)
+        fig.update_layout(width=400, height=300)
         self.fig = fig
         
         return fig
