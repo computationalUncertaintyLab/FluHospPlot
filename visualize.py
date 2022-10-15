@@ -45,13 +45,13 @@ class visualize(object):
             datenext = datenext.strftime("%Y-%m-%d")
             # get one ytick length
             yticklength = ax.get_yticks()[1]-ax.get_yticks()[0]
-            yoffset = yoffset + yticklength if down else yoffset - yticklength
+            offset = yoffset + yticklength if down else yoffset - yticklength
             # print("nextdate",date,datenext)
             ax.annotate(
                 int(hosp),
                 xy=(date,hosp),
                 # change the string format to INT
-                xytext=(datenext, hosp+yoffset),    # fraction, fraction
+                xytext=(date, hosp+offset),    # fraction, fraction
                 arrowprops=dict(arrowstyle='->',color='black',connectionstyle='arc3'),
                 fontsize=5,
             )  
