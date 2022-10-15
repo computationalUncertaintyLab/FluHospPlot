@@ -26,7 +26,7 @@ class visualize(object):
         ax.scatter(dates,hosps[::-1][::4][::-1],s=10,color="blue",alpha=0.8)
         plt.xticks(rotation=-90)
         # make the x_axis labels smaller
-        ax.xaxis.set_tick_params(labelsize=1)
+        ax.xaxis.label.set_size(10)
         #label points 5 weeks in the past
         hospsPast5 = hosps[-5:]
         datesPast5 = plotdata.index[-5:]
