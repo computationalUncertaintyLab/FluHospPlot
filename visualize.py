@@ -32,7 +32,10 @@ class visualize(object):
             text=self.locname[0],
             showarrow=False
         )
+        # fig width and height
+        fig.update_layout(width=800, height=600)
         self.fig = fig
+        
         return fig
             
 
