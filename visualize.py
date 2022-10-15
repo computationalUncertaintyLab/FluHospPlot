@@ -17,10 +17,11 @@ class visualize(object):
 
         plotdata = self.dataWide
         hosps = plotdata[self.locname].values
+        hosps = hosps.reshape(-1)
         dates = plotdata.index[::-1][::4][::-1]
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=dates, y=hosps[::-1][::4][::-1],mode='lines+markers',name='lines+markers'))
+        fig.add_trace(go.Scatter(x=plotdata.index, y=hosps[::-1][::4][::-1],mode='lines+markers',name='lines+markers'))
         fig.update_layout(title='Flu Trajectory',xaxis_title='Date',yaxis_title='Hospitilization')
         # add location name to the left top of the plot
         fig.add_annotation(
@@ -42,7 +43,7 @@ class visualize(object):
 
         fd = self.io.getForecastDate()
         # save the image
-        self.fig.write_image("./{:s}/{:s}_{:s}trajectory.jpg".format(fd,fd,self.io.locAbbr))
+        self.fig.write_html("./{:s}/{:s}_{:s}trajectory.html".format(fd,fd,self.io.locAbbr))
 if __name__ == "__main__":
 
     pass
